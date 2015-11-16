@@ -1,3 +1,4 @@
+import addStaticInherits from 'kudu-model-inherits-decorator';
 import deserialize from 'kudu-deserializer-jsonapi';
 import serialize from 'kudu-serializer-jsonapi';
 import fetch from 'isomorphic-fetch';
@@ -60,6 +61,7 @@ export default class Kudu {
 
     const kudu = this;
 
+    @addStaticInherits
     class Model extends BaseModel {
 
       static singular = singular

@@ -38,6 +38,11 @@ describe('Model', () => {
     expect(Model.schema).to.equal(schema);
   });
 
+  it('should decorate the constructor with a static "inherits" method', () => {
+    let Model = kudu.createModel('test', {});
+    expect(Model.inherits).to.be.a('function');
+  });
+
   describe('instances', () => {
 
     let Model;
