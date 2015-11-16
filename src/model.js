@@ -18,6 +18,20 @@ export default class BaseModel {
   // request.
   save() {
 
+    // Models can define a "create" hook which can modify the instance before
+    // saving. This is useful for e.g. setting a "created at" timestamp. If a
+    // "create" hook function has been defined for the model we invoke it now
+    // before validating the instance.
+    const hooks = this.constructor.schema.hooks || {};
+
+    // If a hook is an array rather than a function we run all functions in
+    // the array in turn.
+    if ( Array.isArray(hooks.onCreate) ) {
+      hooks.onCreate.forEach(( hook ) => void hook.call(this));
+    } else if ( typeof hooks.onCreate === 'function' ) {
+      hooks.onCreate.call(this);
+    }
+
     const endpoint = this.constructor.plural;
     let data = this.app.serialize.toJSON(this, {
       requireId: false,
