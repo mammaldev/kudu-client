@@ -68,6 +68,21 @@ export default class Kudu {
       static plural = plural
       static schema = schema
 
+      // Find all stored instances of this model.
+      static getAll() {
+
+        return fetch(`${ kudu.baseURL }/${ plural }`, {
+          method: 'get',
+          credentials: 'same-origin',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+        })
+        .then(( res ) => res.json())
+        .then(( json ) => kudu.deserialize(json, singular));
+      }
+
       constructor( data ) {
         super(kudu, data);
       }
