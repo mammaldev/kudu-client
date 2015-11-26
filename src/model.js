@@ -16,7 +16,12 @@ export default class BaseModel {
 
   // Send an unsaved model instance to the server as the body of an HTTP POST
   // request.
-  save() {
+  //
+  // Options:
+  //   include    {Array|String}    A list of relations to include in the
+  //                                response from the server on success.
+  //
+  save( opts = {} ) {
 
     // Models can define a "create" hook which can modify the instance before
     // saving. This is useful for e.g. setting a "created at" timestamp. If a
@@ -37,7 +42,25 @@ export default class BaseModel {
       requireId: false,
     });
 
-    return fetch(`${ this.app.baseURL }/${ endpoint }`, {
+    let qs;
+    let includes;
+    if ( opts.include ) {
+
+      includes = Array.isArray(opts.include) ?
+        opts.include.join() :
+        opts.include;
+    }
+
+    if ( includes ) {
+      qs = `?include=${ includes }`;
+    }
+
+    let url = `${ this.app.baseURL }/${ endpoint }`;
+    if ( qs ) {
+      url += qs;
+    }
+
+    return fetch(url, {
       method: 'post',
       body: data,
       credentials: 'same-origin',

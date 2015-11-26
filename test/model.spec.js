@@ -138,5 +138,16 @@ describe('Model', () => {
       });
       return expect(instance.save()).to.become(instance);
     });
+
+    it('should ask for included documents if the relevant option is present', () => {
+      let instance = new Model({ type: 'test', name: 'test' });
+      nock('http://localhost:7357')
+      .post('/tests')
+      .query({ include: 'relation' })
+      .reply(201, {
+        data: { type: 'test', id: '1' },
+      });
+      return expect(instance.save({ include: 'relation' })).to.become(instance);
+    });
   });
 });
