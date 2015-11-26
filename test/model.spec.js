@@ -73,6 +73,18 @@ describe('Model', () => {
       });
       return expect(Model.getAll()).to.eventually.be.an('array').of.length(2);
     });
+
+    it('should ask for included documents if the relevant option is present', () => {
+      nock('http://localhost:7357')
+      .get('/tests')
+      .query({ include: 'relation' })
+      .reply(200, {
+        data: [
+          { type: 'test', id: '1' },
+        ],
+      });
+      return expect(Model.getAll({ include: 'relation' })).to.eventually.be.an('array');
+    });
   });
 
   describe('instances', () => {

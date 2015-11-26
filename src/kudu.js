@@ -3,6 +3,7 @@ import deserialize from 'kudu-deserializer-jsonapi';
 import serialize from 'kudu-serializer-jsonapi';
 import fetch from 'isomorphic-fetch';
 import BaseModel from './model';
+import { buildQueryString } from './util';
 
 export default class Kudu {
 
@@ -69,9 +70,15 @@ export default class Kudu {
       static schema = schema
 
       // Find all stored instances of this model.
-      static getAll() {
+      static getAll( opts = {} ) {
 
-        return fetch(`${ kudu.baseURL }/${ plural }`, {
+        const qs = buildQueryString(opts);
+        let url = `${ kudu.baseURL }/${ plural }`;
+        if ( qs ) {
+          url += qs;
+        }
+
+        return fetch(url, {
           method: 'get',
           credentials: 'same-origin',
           headers: {

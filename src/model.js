@@ -1,4 +1,5 @@
 import fetch from 'isomorphic-fetch';
+import { buildQueryString } from './util';
 
 export default class BaseModel {
 
@@ -42,19 +43,7 @@ export default class BaseModel {
       requireId: false,
     });
 
-    let qs;
-    let includes;
-    if ( opts.include ) {
-
-      includes = Array.isArray(opts.include) ?
-        opts.include.join() :
-        opts.include;
-    }
-
-    if ( includes ) {
-      qs = `?include=${ includes }`;
-    }
-
+    const qs = buildQueryString(opts);
     let url = `${ this.app.baseURL }/${ endpoint }`;
     if ( qs ) {
       url += qs;
