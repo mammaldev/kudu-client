@@ -69,4 +69,16 @@ export default class BaseModel {
       return this;
     });
   }
+
+  // Prepare a model instance for serialisation to a JSON string. We make a
+  // shallow clone of the instance and then remove the reference to the Kudu
+  // application. The clone is necessary so the original instance keeps its
+  // reference to the app.
+  toJSON() {
+
+    const obj = Object.assign({}, this);
+    delete obj.app;
+
+    return obj;
+  }
 }

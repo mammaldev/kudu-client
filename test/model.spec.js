@@ -162,4 +162,35 @@ describe('Model', () => {
       return expect(instance.save({ include: 'relation' })).to.become(instance);
     });
   });
+
+  describe('#toJSON', () => {
+
+    let Model;
+    let instance;
+
+    beforeEach(() => {
+      Model = kudu.createModel('test', {
+        properties: {
+          name: {
+            type: String,
+            required: true,
+          },
+        },
+      });
+      instance = new Model({ type: 'test', name: 'test' });
+    });
+
+    it('should remove the reference to the Kudu app from the instance', () => {
+      expect(instance.toJSON()).not.to.have.property('app');
+    });
+
+    it('should allow serialisation of the resulting object', () => {
+      expect(JSON.stringify(instance.toJSON())).to.be.a('string');
+    });
+
+    it('should not affect the original instance', () => {
+      instance.toJSON();
+      expect(instance).to.have.property('app');
+    });
+  });
 });
