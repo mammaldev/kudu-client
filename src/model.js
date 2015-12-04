@@ -1,18 +1,11 @@
+import BaseModel from 'kudu-model';
 import fetch from 'isomorphic-fetch';
 import { buildQueryString } from './util';
 
-export default class BaseModel {
+export default class KuduClientBaseModel extends BaseModel {
 
   constructor( app, data = {} ) {
-
-    // Expose a reference to the Kudu app. This is important because instances
-    // have methods ('save' for example) that require access to e.g. a
-    // configured serializer.
-    this.app = app;
-
-    // If an initial data object is provided to a model constructor the
-    // properties of that object are mapped onto the resulting instance.
-    Object.keys(data).forEach(( key ) => this[ key ] = data[ key ]);
+    super(app, data);
   }
 
   // Send an unsaved model instance to the server as the body of an HTTP POST
@@ -68,17 +61,5 @@ export default class BaseModel {
 
       return this;
     });
-  }
-
-  // Prepare a model instance for serialisation to a JSON string. We make a
-  // shallow clone of the instance and then remove the reference to the Kudu
-  // application. The clone is necessary so the original instance keeps its
-  // reference to the app.
-  toJSON() {
-
-    const obj = Object.assign({}, this);
-    delete obj.app;
-
-    return obj;
   }
 }
