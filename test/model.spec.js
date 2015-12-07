@@ -49,6 +49,35 @@ describe('Model', () => {
     expect(Model.inherits).to.be.a('function');
   });
 
+  describe('static get', () => {
+
+    let Model;
+
+    beforeEach(() => {
+      Model = kudu.createModel('test', {});
+    });
+
+    it('should return a promise', () => {
+      expect(Model.get('1')).to.be.an.instanceOf(Promise);
+    });
+
+    it('should be rejected if the server returns an error', () => {
+      nock('http://localhost:7357').get('/tests/1').reply(500, {
+        errors: [
+          { detail: 'test' },
+        ],
+      });
+      return expect(Model.get('1')).to.be.rejectedWith(Error, /Expected an instance/);
+    });
+
+    it('should return an instance', () => {
+      nock('http://localhost:7357').get('/tests/1').reply(200, {
+        data: { type: 'test', id: '1' },
+      });
+      return expect(Model.get('1')).to.eventually.be.an.instanceOf(BaseModel);
+    });
+  });
+
   describe('static getAll', () => {
 
     let Model;

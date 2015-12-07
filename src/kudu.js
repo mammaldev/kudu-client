@@ -76,6 +76,27 @@ export default class Kudu {
       static plural = plural
       static schema = schema
 
+      // Find a specific stored instance of this model by unique identifier.
+      static get( id, opts = {} ) {
+
+        const qs = buildQueryString(opts);
+        let url = `${ kudu.baseURL }/${ plural }/${ id }`;
+        if ( qs ) {
+          url += qs;
+        }
+
+        return fetch(url, {
+          method: 'get',
+          credentials: 'same-origin',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+        })
+        .then(( res ) => res.json())
+        .then(( json ) => kudu.deserialize(json, singular));
+      }
+
       // Find all stored instances of this model.
       static getAll( opts = {} ) {
 
