@@ -180,4 +180,63 @@ describe('Model', () => {
       return expect(instance.save({ include: 'relation' })).to.become(instance);
     });
   });
+
+  describe('#update', () => {
+
+    let Model;
+
+    beforeEach(() => {
+      Model = kudu.createModel('test', {
+        properties: {
+          name: {
+            type: String,
+            required: true,
+          },
+        },
+      });
+    });
+
+    it('should return a promise', () => {
+      let instance = new Model();
+      expect(instance.save()).to.be.an.instanceOf(Promise);
+    });
+
+    it('should be rejected if the server returns an error', () => {
+      let instance = new Model({ type: 'test', id: '1' });
+      nock('http://localhost:7357').patch('/tests').reply(400, {
+        errors: [
+          { detail: 'test' },
+        ],
+      });
+      return expect(instance.update()).to.be.rejectedWith(Error, /Expected an instance/);
+    });
+
+    it('should succeed when the model is valid', () => {
+      let instance = new Model({ type: 'test', id: '1', name: 'test' });
+      nock('http://localhost:7357').patch('/tests').reply(201, {
+        data: { type: 'test', id: '1' },
+      });
+      return expect(instance.update()).to.eventually.be.an.instanceOf(Model)
+        .and.have.property('id', '1');
+    });
+
+    it('should return the instance that was acted upon', () => {
+      let instance = new Model({ type: 'test', id: '1', name: 'test' });
+      nock('http://localhost:7357').patch('/tests').reply(201, {
+        data: { type: 'test', id: '1' },
+      });
+      return expect(instance.update()).to.become(instance);
+    });
+
+    it('should ask for included documents if the relevant option is present', () => {
+      let instance = new Model({ type: 'test', id: '1', name: 'test' });
+      nock('http://localhost:7357')
+      .patch('/tests')
+      .query({ include: 'relation' })
+      .reply(201, {
+        data: { type: 'test', id: '1' },
+      });
+      return expect(instance.update({ include: 'relation' })).to.become(instance);
+    });
+  });
 });
