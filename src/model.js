@@ -90,7 +90,7 @@ export default class KuduClientBaseModel extends BaseModel {
     const data = this.app.serialize.toJSON(this);
 
     const qs = buildQueryString(opts);
-    let url = `${ this.app.baseURL }/${ endpoint }`;
+    let url = `${ this.app.baseURL }/${ endpoint }/${ this.id }`;
     if ( qs ) {
       url += qs;
     }

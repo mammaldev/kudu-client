@@ -203,7 +203,7 @@ describe('Model', () => {
 
     it('should be rejected if the server returns an error', () => {
       let instance = new Model({ type: 'test', id: '1' });
-      nock('http://localhost:7357').patch('/tests').reply(400, {
+      nock('http://localhost:7357').patch('/tests/1').reply(400, {
         errors: [
           { detail: 'test' },
         ],
@@ -213,7 +213,7 @@ describe('Model', () => {
 
     it('should succeed when the model is valid', () => {
       let instance = new Model({ type: 'test', id: '1', name: 'test' });
-      nock('http://localhost:7357').patch('/tests').reply(201, {
+      nock('http://localhost:7357').patch('/tests/1').reply(201, {
         data: { type: 'test', id: '1' },
       });
       return expect(instance.update()).to.eventually.be.an.instanceOf(Model)
@@ -222,7 +222,7 @@ describe('Model', () => {
 
     it('should return the instance that was acted upon', () => {
       let instance = new Model({ type: 'test', id: '1', name: 'test' });
-      nock('http://localhost:7357').patch('/tests').reply(201, {
+      nock('http://localhost:7357').patch('/tests/1').reply(201, {
         data: { type: 'test', id: '1' },
       });
       return expect(instance.update()).to.become(instance);
@@ -231,7 +231,7 @@ describe('Model', () => {
     it('should ask for included documents if the relevant option is present', () => {
       let instance = new Model({ type: 'test', id: '1', name: 'test' });
       nock('http://localhost:7357')
-      .patch('/tests')
+      .patch('/tests/1')
       .query({ include: 'relation' })
       .reply(201, {
         data: { type: 'test', id: '1' },
