@@ -1,6 +1,6 @@
 {
   "name": "kudu-client",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "main": "lib/kudu.js",
   "scripts": {
     "compile": "babel -d lib/ src/",
