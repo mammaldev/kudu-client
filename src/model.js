@@ -96,7 +96,7 @@ export default class KuduClientBaseModel extends BaseModel {
     }
 
     return fetch(url, {
-      method: 'patch',
+      method: 'put',
       body: data,
       credentials: 'same-origin',
       headers: {
