@@ -1,21 +1,11 @@
 import chai from 'chai';
-import utils from '../src/util';
+import { buildQueryString } from '../src/util';
 
 const expect = chai.expect;
 
 describe('Utilities', () => {
 
-  it('should expose an object', () => {
-    expect(utils).to.be.an('object');
-  });
-
   describe('buildQueryString', () => {
-
-    let buildQueryString;
-
-    beforeEach(() => {
-      buildQueryString = utils.buildQueryString.bind(utils);
-    });
 
     it('should return nothing if not passed anything', () => {
       expect(buildQueryString()).to.be.undefined;
